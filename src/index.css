@@ -1,13 +1,47 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.slogan span{
+  @apply block mb-[10px]
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.terms{
+  @apply hover:cursor-pointer
 }
+.nav-items li{
+  @apply hover:cursor-pointer hover:bg-gray-50 hover:rounded-full px-4
+}
+.nav-drop li{
+  @apply py-4 border-b p-5 hover:cursor-pointer hover:bg-gray-50
+}
+.form-create{
+  @apply font-notoSans
+}
+.form-create,input,textarea{
+  @apply block
+}
+
+
+textarea{
+  @apply border shadow-sm mt-5 w-full lg:w-8/12 h-[200px] outline-none focus:outline-none rounded-lg p-2 ps-4 
+}
+.create-input{
+  @apply border-2 w-full lg:w-8/12 p-2 rounded-lg mt-5 ps-4 outline-none shadow-sm
+}
+.tooltip{
+  @apply relative inline-block
+}
+/* .tooltip-content{
+  @apply absolute bg-black text-white bottom-[100%] lg:bottom-[50%] lg:left-[150%] z-10 p-1 ps-3 pe-3 w-auto max-w-[90vw] text-wrap rounded-lg 
+}
+.tooltip-content::after{
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+} */
