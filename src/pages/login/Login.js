@@ -1,152 +1,116 @@
-
-import UserForm from '../../components/login/UserForm'
-import YoutuberForm from '../../components/login/YoutuberForm'
-import {useEffect, useState} from 'react'
-import {TypeAnimation} from 'react-type-animation'
-import {CircleUserRound, Youtube} from 'lucide-react'
+import Lottie from 'lottie-react'
+import log from '../../assets/lottie/log.json'
+import github from '../../assets/svg/github.svg'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 function Login(){
-    let [role,setRole] = useState(false)
-    
-useEffect(()=>{
+let [role,setRole] = useState(null)
 
+useEffect(()=>{
     let q = new URLSearchParams(window.location.search)
     console.log(q)
      let code = q.get('code')
      let accessTokenThere = localStorage.getItem('github_access_token')
 if(!accessTokenThere && code){
+    axios.get(process.env.REACT_APP_BACKEND_URL+"users/logViaGithub/reqAccessToken/"+process.env.REACT_APP_GITHUB_CLIENT_ID+"/"+code+"/").then((res)=>{
 
-
-    axios.get(process.env.REACT_APP_BACKEND_URL+"users/logViaGithub/reqAccessToken/"+process.env.REACT_APP_GITHUB_CLIENT_ID+"/"+code+"/").then(res=>{
         let r = res.data
         let q = new URLSearchParams(r);
         let access_token = q.get("access_token")
-        let token_type = q.get("token_type") 
         let isError = q.get("error")
-        console.log("hello")
 
-       if(isError){
-alert(isError)
-       }else{
-       
-try{
-    let y_data = JSON.parse(localStorage.getItem('youtuberData'))
-    let l_data = JSON.parse(localStorage.getItem("learnerData"))
-console.log(y_data,l_data)
-    if(y_data){
-        console.log("going to create youtube")
-       axios.post(process.env.REACT_APP_BACKEND_URL+"users/createAccount/youtuber",{...y_data,oauthToken:access_token}).then(res=>{
-           localStorage.setItem("github_access_token",access_token)
-           localStorage.setItem("github_token_type",token_type)
-           console.log(res)
-         }).catch(err=>{
-           console.log(err)
-         })
-    }
-
-    if(l_data){
-        console.log("going to create learner")
-
-        axios.post(process.env.REACT_APP_BACKEND_URL+"users/createAccount/learner",{...l_data,oauthToken:access_token}).then(res=>{
-            console.log("hello")
+      if(isError){
+            alert(isError)
+      }else{
+        let isYoutuber = localStorage.getItem('youtuberData')
+        if(isYoutuber){
+            axios.post(process.env.REACT_APP_BACKEND_URL+"users/loginToCredoff/youtuber",{oauthToken:access_token}).then((resp)=>{
+                localStorage.setItem("youtuberId",resp.data.youtuberId)
+                localStorage.setItem("github_id",resp.data.github_id)
+                localStorage.setItem("github_node_id",resp.data.github_node_id)
+                localStorage.setItem("github_access_token",access_token)
+                console.log(resp)
+            }).catch(err=>{
+                console.log(err)
+            })
+        }
+        let isLearner = localStorage.getItem('learnerData')
+        if(isLearner){
+            axios.post(process.env.REACT_APP_BACKEND_URL+"users/loginToCredoff/learner",{oauthToken:access_token}).then((resp)=>{
+            localStorage.setItem("learnerId",resp.data.learnerId)
+            localStorage.setItem("github_id",resp.data.github_id)
+            localStorage.setItem("github_node_id",resp.data.github_node_id)
             localStorage.setItem("github_access_token",access_token)
-            localStorage.setItem("github_token_type",token_type)
-            console.log(res)
-          }).catch(err=>{
-            console.log(err)
-          })
-    }
-}catch(err){
-    console.log(err)
-}
-
- 
-
-       }
-     }).catch(err=>{
+            }).catch(err=>{
+                console.log(err)
+            })
+        }
+      }
+    }).catch(err=>{
         console.log(err)
-     })
+    })
 }
-
-
-     
 },[])
-    return(
-        <>
+let loginWithGithub = ()=>{
+if(!role){
+    alert("select your role")
+}else{
+    if(role === "youtuber"){
+        localStorage.setItem('youtuberData',"true") 
+    }
+    else{
+        localStorage.setItem('learnerData',"true")
+    }
 
-<div className="container mx-auto">
-        
+  setTimeout(()=>{
+    window.location.assign("https://github.com/login/oauth/authorize/?client_id="+process.env.REACT_APP_GITHUB_CLIENT_ID+"&allow_signup=true&redirect_uri="+process.env.REACT_APP_URL+"login")
+  },1000)
+
+}
+
+}
+    return(<>
+    <div className="container mx-auto font-poppins mt-5">
+    <h1 className="ms-3  text-primary font-semibold text-2xl">Credoff</h1>
         <div className="lg:flex">
-            <div className="lg:hidden bg-primary p-2 text-white font-poppins">
-            <h1 className="text-xl mt-1 ms-[10px]">Credoff</h1>
+            <div className="w-full lg:w-6/12">
+                <Lottie animationData={log} loop={true}/>
             </div>
-{/* welcome content */}
-<div className="hidden lg:block bg-primary relative text-white font-poppins p-5 my-5 mx-5 h-[90vh] rounded-2xl ">
-<h1 className="ms-[10px]">Credoff</h1>
-<div className="mt-20">
-    <h2 className="text-4xl font-semibold slogan">
-        <span>Turn YouTube </span>
-    
-    <span>Learning into Real </span>
-    <TypeAnimation 
-    sequence={[
-        "Credoff",
-        2000,
-        "Credits",
-        2000,
-        "Credentials",
-        2000
-    ]
-}
-wrapper='span'
-speed={20}
-repeat={Infinity}
-    />
-        </h2>
-</div>
 
-<div className="flex text-xs justify-around absolute w-full bottom-5 right-1">
-<div><p className="terms">Terms & Conditions.</p></div>
-<div><p className="terms">Policies.</p></div>
-<div><p className="terms">Help & Queries.</p></div>
+            <div className='w-full lg:w-6/12 p-10'>
+               <div>
+               <div className='font-semibold text-3xl lg:mt-20'>
+                    <p>Welcome back</p>
+                    <p>here.</p>
+                </div>
 
-</div>
-</div>
-{/* login form */}
+                <div className='hidden lg:block mt-10'>
+                    <p className='text-center text-gray-400 font-semibold'>Select your role here</p>
+                    <div className='flex gap-2 justify-center mt-5'>
+                    <button onClick={()=>{setRole("youtuber")}} className={`border ${role==="youtuber"?"bg-primary text-white":"border-black text-black"}  p-2 rounded-lg block w-5/12`}>Youtuber</button>
+                
+                    <button onClick={()=>{setRole("learner")}} className={`border ${role==="learner"?"bg-primary text-white":"border-black text-black"}  p-2 rounded-lg block w-5/12`}>Learner</button>
+                    
+               
+                    </div>
 
-<div className="font-poppins p-5 lg:p-0 my-5 md:mx-5 h-[90vh] lg:w-6/12 w-full">
-<h3 className="text-3xl  text-primary mt-10 font-semibold">Sign up</h3>
-<p>Have an account in credoff</p>
-
-{/* types of user */}
-<div className="mt-5 font-notoSans ">
-<span className="font-semibold">What type of user you are ? </span>
-<div className="flex justify-between  gap-2 mt-3">
-
-<button  onClick={()=>{setRole(false)}} className={`border p-2 w-6/12 md:w-5/12 text-center rounded-xl hover:cursor-pointer hover:shadow-primary ${!role? "text-white bg-primary":"text-black bg-white"}`}>
-<span className="font-semibold"><CircleUserRound className='hidden md:inline h-[25px] w-[25px]  me-3 '/> I am a learner</span>
-</button>
-
-<button onClick={()=>{setRole(true)}}  className={`border p-2 w-6/12 md:w-5/12 text-center rounded-xl hover:cursor-pointer  ${role? "text-white bg-primary":"text-black bg-white"}`}>
-<span className="font-semibold"> <Youtube className='hidden md:inline h-[25px] w-[25px]  me-3 '/>I am a youtuber</span>
-
-</button>
-</div>
-</div>
-<div>{role === true?<YoutuberForm />:<UserForm />}
-</div>
-
-<div className='text-center mt-5 mb-5 border-t-2'>
-    <p className='text-gray-500 mt-5'>already have an account?<span className='text-primary hover:cursor-pointer hover:underline'> click here</span></p>
-    {/* <button className="bg-black mt-4 md:mt-3 md:w-6/12 w-full rounded-lg p-2 text-white"><img src={github} className='h-[20px] w-[20px] inline me-3' alt='github'/>Login via Github</button> */}
-
-</div>
-
-</div>
+                     </div>
+                <div className='block lg:hidden'>
+                    <select value={role} onChange={(e)=>{setRole(e.target.value)}} className='w-full mt-5 border bg-white p-2 '>
+                        <option value={""}>Select your Role</option>
+                        <option value={"youtuber"}>Youtuber</option>
+                        <option value={"learner"}>Learner</option>
+                    </select>
+                </div>
+                     <div className='flex justify-center'>
+                     <button onClick={()=>{loginWithGithub()}} className="bg-black mt-5 w-full lg:mt-20 lg:w-10/12  rounded-lg p-2 text-white"><img src={github} className='h-[20px] w-[20px] inline me-3' alt='github'/>Login With Github</button>
+                    
+                     </div>
+                    <span className='mt-5 text-center block'>Create an new Account ? <span className='text-primary'>Sign up</span></span>
+               </div>
+            </div>
         </div>
-        </div>
-        </>
-    )
+    </div>
+    </>)
 }
-
 export default Login

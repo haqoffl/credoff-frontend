@@ -3,31 +3,70 @@ import frame from '../../../assets/svg/Frame.svg'
 import { useState } from "react"
 import Tag from "../../../components/ui/Tags"
 import { CircleMinus, CirclePlus } from "lucide-react"
-
+import imagesize from 'browser-image-size'
+import axios from 'axios'
 export default function Create(){
 let [tube,setTube] = useState({
     title:"",
     desc:"",
     thumbnail:null,
     tags:[],
-    programingLanguage:""
+    programming_language:""
 }) 
+let [thumbnail,setThumbnail] = useState()
+let [thumbErr,setThumErr] = useState(null)
 
+let [preview,setPreview] = useState(null)
 let [errors,setErrors] = useState({
     title:"",
     desc:"",
-    programingLanguage:"",
-    tag:""
+    programming_language:"",
 })
 let [terms,setTerms] = useState([{filePath:"",keywords:[]}])
-let [tagsErrors,setTagErrors] = useState({index:null,message:""})
+let [conditions,setConditions] = useState([{filePath:"",commentStart:"",commentEnd:"",function:""}])
+
+let [errTerms,setErrorTerms] = useState([{filePathErr:""}])
+let [errCondtions,setErrorConditions] = useState([{filePathErr:"",commStartErr:"",commEndErr:"",funcError:""}])
 
 let myTube = (event)=>{
 event.preventDefault()
-console.log({
-    tube,
-    terms
+let tubeObj = {
+    ...tube,
+    terms: [...terms],
+    conditions: [...conditions],
+    thumbnail:thumbnail,
+    id:localStorage.getItem('youtuberId')
+}
+
+let tagsLength = tubeObj.tags.length < 6 ?true:false
+let isErrorInTerm = terms.findIndex((val,i)=>{
+    console.log(val)
+    return errTerms[i].filePathErr !== null || val.keywords.length < 6
 })
+let isErrorInCond = conditions.findIndex((val,i)=>{
+    return (errCondtions[i].commEndErr !== null || errCondtions[i].commStartErr !== null || errCondtions[i].filePathErr !== null || errCondtions[i].funcError !== null)
+})
+
+console.log("errors: ",tagsLength,isErrorInTerm,isErrorInCond)
+if(tubeObj.title.length < 10 || tubeObj.desc.length < 200 || tubeObj.programming_language.length < 3 || tagsLength || isErrorInTerm !== -1 || isErrorInCond !== -1 || !tubeObj.thumbnail){
+console.log("Please make sure all fields are filled in.")
+console.log(tubeObj)
+}else{
+    const formdata = new FormData()
+    formdata.append('image',tubeObj.thumbnail)
+    formdata.append('data',JSON.stringify(tubeObj))
+    console.log(formdata)
+    axios.post(process.env.REACT_APP_BACKEND_URL+"tube/createTube",formdata,{
+        headers:{
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then((res)=>{
+        alert("created")
+        console.log(res)
+    }).catch(err=>{
+        console.log(err)
+    })
+}
 }
 
 let updateBasicTube= (val,min,max,errMsg)=>{
@@ -46,6 +85,10 @@ let addTerms = ()=>{
 setTerms((prev=>{
     return [...prev,{filePath:"",keywords:[]}]
 }))
+
+setErrorTerms((prev=>{
+    return [...prev,{filePathErr:"",keywordsError:""}]
+}))
 }
 
 let removeTerms = ()=>{
@@ -57,7 +100,43 @@ let removeTerms = ()=>{
   })
 
   setTerms(new_arr)
+
+  let new_err_arr = errTerms.filter((val,index)=>{
+    if(index !== 0)
+        return index !== (errTerms.length-1)
+    else
+        return val
+  })
+  setErrorTerms(new_err_arr)
 }
+
+let addConditions = ()=>{
+setConditions((prev)=>{
+    return [...prev,{filePath:"",commentStart:"",commentEnd:"",function:""}]
+})
+
+setErrorConditions((prev)=>{
+    return [...prev,{filePathErr:"",commStartErr:"",commEndErr:"",funcError:""}]
+})
+}
+let removeConditions = ()=>{
+    let new_arr = conditions.filter((val,index)=>{
+        if(index !== 0)
+            return index !== (conditions.length-1)
+        else 
+            return val
+      })
+      console.log(new_arr)
+      setConditions(new_arr)
+      let new_err_arr = errCondtions.filter((val,index)=>{
+        if(index !== 0)
+            return index !== (errCondtions.length-1)
+        else return val
+      })
+      
+      setErrorConditions(new_err_arr)
+}
+
 
 function isPath(input) {
     // Trim whitespace from the input
@@ -79,9 +158,19 @@ if(is_path){
            return  index === i ? {...val,filePath:path}:{...val}
         })
     })
+
+    setErrorTerms((prev)=>{
+        return prev.map((val,i)=>{
+            return index === i ? {...val,filePathErr:null}:{...val}
+        })
+       })
 }
 else{
-    console.log("it is not path")
+    setErrorTerms((prev)=>{
+        return prev.map((val,i)=>{
+            return index === i ? {...val,filePathErr:"give the correct path"}:{...val}
+        })
+       })
 }
 }
 
@@ -99,14 +188,141 @@ let updateTagsInTube = (_,tags)=>{
     })
 }
 
-let setTagError = (index,message)=>{
-setTagErrors((prev)=>{
-    return {...prev,index,message}
+
+let updateConditionFilePath = (index,path)=>{
+    let is_path = isPath(path)
+    if(is_path){
+        console.log("it is file")
+        setConditions((prev)=>{
+            return prev.map((val,i)=>{
+               return  index === i ? {...val,filePath:path}:{...val}
+            })
+        })
+
+        setErrorConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,filePathErr:null}:{...val}
+            })
+           })
+    }
+    else{
+        setErrorConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,filePathErr:"give the correct path"}:{...val}
+            })
+           })
+    }
+}
+let updateCondtionCommentStart = (index,input)=>{
+    if(input.length > 3){
+        setConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,commentStart:input}:{...val}
+            })
+        })
+
+        setErrorConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,commStartErr:null}:{...val}
+            })
+           })
+    }else{
+        setErrorConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,commStartErr:"This field must contain more than three characters."}:{...val}
+            })
+           })
+    }
+
+
+
+}
+
+let updateCondtionCommentEnd = (index,input)=>{
+    if(input.length > 3){
+        setConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,commentEnd:input}:{...val}
+            })
+        })
+
+        setErrorConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,commEndErr:null}:{...val}
+            })
+           })
+    
+    }else{
+        setErrorConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,commEndErr:"This field must contain more than three characters."}:{...val}
+            })
+           })
+    }
+
+
+}
+
+
+let updateCondtionFunction = (index,input)=>{
+    if(input.length > 50){
+        setConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,function:input}:{...val}
+            })
+        })
+
+        setErrorConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,funcError:null}:{...val}
+            })
+           })
+    
+    }else{
+        setErrorConditions((prev)=>{
+            return prev.map((val,i)=>{
+                return index === i ? {...val,funcError:"This field must contain more than 50 characters."}:{...val}
+            })
+           })
+    }
+
+
+}
+let removeTags = (value,_)=>{
+let t = tube.tags
+let new_Arr = t.filter((val)=>{
+    return val !== value
+})
+setTube((prev)=>{
+    return {...prev,tags:new_Arr}
 })
 }
 
-console.log(errors)
-console.log(tube)
+let removeKeywords = (value,index)=>{
+    setTerms((prev)=>{
+        return prev.map((val,i)=>{
+            let new_keywords = val.keywords.filter((val)=>{return (val !== value)})
+           return  index === i ? {...val,keywords:new_keywords}:{...val}
+        })
+    })
+
+}
+
+let handleFiles = async(file)=>{
+console.log(file)
+let {width,height} = await imagesize(file)
+console.log(width,height)
+if (width === 1280 && height === 720){
+    setThumbnail(file)
+    setThumErr(null)
+    const imageUrl = URL.createObjectURL(file);
+    setPreview(imageUrl)
+
+}else{
+    setThumErr("The image resolution should match the specified dimensions")
+}
+
+}
     return(
         <>
         <div className="container mx-auto">
@@ -123,8 +339,9 @@ console.log(tube)
                 <p className="text-red-600">{errors.desc?errors.desc:null}</p>
 
                 <label className="block mt-5 font-semibold text-xl">Thumbnail</label>
-                <FileUploader children={
-                    <div className="flex flex-col justify-between border h-[300px] rounded-lg p-5 lg:w-8/12 mt-5">
+               {!thumbnail?(
+                 <FileUploader handleChange={handleFiles} name="file" types={["JPG", "PNG", "GIF"]} children={
+                    <div className="flex flex-col justify-between border h-[300px] rounded-lg p-5 lg:w-8/12 mt-5" >
             
                         <div className="flex  justify-center">
                         <div className="text-center mt-10">
@@ -141,17 +358,18 @@ console.log(tube)
                         <div>
                                <ul className="ms-2 lg:ms-0 list-disc lg:flex lg:justify-between text-gray-500">
                                 <li>Aspect ratio 16:9</li>
-                                <li>Recommended size 1024 X 576</li>
+                                <li>Recommended size 1280 X 720</li>
                                </ul>
                             </div>
                     </div>
                     }/>
-
+               ):<img src={preview} alt="thumbnail" className="w-full rounded-lg lg:w-8/12 "/>}
+                {!thumbErr?null:<p className="text-red-600">{thumbErr}</p>}
                 <label className="block mt-5 font-semibold text-xl">Tags</label>
                <div className="w-full lg:w-8/12 ">
-               <Tag  updateTags={updateTagsInTube} setErr={setTagError} ind={-1}/>
+               <Tag  updateTags={updateTagsInTube}  ind={-1} removeFunc={removeTags}/>
 
-            <p className="text-red-600">{tagsErrors.index === -1 ? tagsErrors.message:null}</p>
+            <p className="text-red-600">{(tube.tags.length < 6 && tube.tags.length >0) ? <span>Tag should be at least more than 5</span>:null}</p>
 
                <p className="text-gray-500 mt-1"> Enter Tags, separated by commas for create Ai generated quiz</p>
                </div>
@@ -164,12 +382,13 @@ console.log(tube)
                 <div className="mb-20">
             
                     <input type="text" placeholder="Enter the GitHub file path (e.g., /folder/filename.ext or /filename.ext)" className="create-input" onChange={(e)=>{updateTermsFilePath(i,e.target.value)}}/>
+                    {errTerms[i].filePathErr !=="" ? <p className="text-red-600">{errTerms[i].filePathErr}</p>:null}
                     <p className="text-gray-500 mt-1">Provide the full path of the file in the GitHub repository. (e.g.,/folder/filename.ext or /filename.ext)</p>
                         
                     <div className="w-full lg:w-8/12 ">
-                   <Tag  updateTags={updateKeywordsInTerms} setErr={setTagError} ind={i}/>
+                   <Tag  updateTags={updateKeywordsInTerms} ind={i} removeFunc={removeKeywords} />
 
-                   <p className="text-red-600">{tagsErrors.index === i ? tagsErrors.message:null}</p>
+                   <p className="text-red-600">{(terms[i].keywords.length< 6 && terms[i].keywords.length > 0)? <span>Tag should be at least more than 5</span>:null}</p>
 
                 </div>
                    <p className="text-gray-500 mt-1 mb-5"> Enter keywords, separated by commas (e.g.,for,switch,import library;)</p>
@@ -183,24 +402,40 @@ console.log(tube)
           }))}
 
 
-                <label className="block mt-5 font font-semibold text-xl">Conditions</label>
+<div className="flex justify-between w-full lg:w-8/12">
+                <label className="block mt-5 font-semibold text-xl">Conditions</label>
+                <div className="flex gap-3 mt-5"><CirclePlus className="cursor-pointer" onClick={addConditions}/> <CircleMinus className="cursor-pointer" onClick={removeConditions}/></div>
+                    </div>
+{conditions.map((val,i)=>{
+    return(
+        <div className="mb-20">
 
-                <input type="text" placeholder="Enter the GitHub file path (e.g., /folder/filename.ext or /filename.ext)" className="create-input"/>
+<input type="text" placeholder="Enter the GitHub file path (e.g., /folder/filename.ext or /filename.ext)" className="create-input" onChange={(e)=>{updateConditionFilePath(i,e.target.value)}}/>
+{errCondtions[i].filePathErr ? <p className="text-red-600">{errCondtions[i].filePathErr}</p>:null}
+
                 <p className="text-gray-500 mt-1">Provide the full path of the file in the GitHub repository. (e.g.,/folder/filename.ext or /filename.ext)</p>
 
-                <input type="text" placeholder="Enter the start comment identifier" className="create-input"/>
+                <input type="text" placeholder="Enter the start comment identifier" className="create-input" onChange={(e)=>{updateCondtionCommentStart(i,e.target.value)}}/>
+
+                {errCondtions[i].commStartErr ? <p className="text-red-600">{errCondtions[i].commStartErr}</p>:null}
                 <p className="text-gray-500 mt-1">Provide the comment where the code block starts (e.g., // Start Code or # Start code).</p>
 
-         <input type="text" placeholder="Enter the end comment identifier" className="create-input"/>
+         <input type="text" placeholder="Enter the end comment identifier" className="create-input" onChange={(e)=>{updateCondtionCommentEnd(i,e.target.value)}}/>
          <p className="text-gray-500 mt-1">Provide the comment where the code block ends (e.g., // End Code or # End code).</p>
-
-                <textarea placeholder="Describe what the code does between Comment Start and Comment End">
+         {errCondtions[i].commEndErr ? <p className="text-red-600">{errCondtions[i].commEndErr}</p>:null}
+                <textarea placeholder="Describe what the code does between Comment Start and Comment End" onChange={(e)=>{updateCondtionFunction(i,e.target.value)}}>
 
 </textarea>
-<label className="block mt-5 font-semibold text-xl">Programming Language</label>
-<input type="text" placeholder="enter programming language" className="create-input" onChange={(e)=>{updateBasicTube({programingLanguage:e.target.value},3,100,"characters should be more 3")}}/>
+{errCondtions[i].funcError? <p className="text-red-600">{errCondtions[i].funcError}</p>:null}
+<hr className="w-full border-black lg:w-8/12 mb-5 mt-5"/>
 
-<p className="text-red-600">{errors.programingLanguage?errors.programingLanguage:null}</p>
+</div>
+    )
+})}
+<label className="block mt-5 font-semibold text-xl">Programming Language</label>
+<input type="text" placeholder="enter programming language" className="create-input" onChange={(e)=>{updateBasicTube({programming_language:e.target.value},3,100,"characters should be more 3")}}/>
+
+<p className="text-red-600">{errors.programming_language?errors.programming_language:null}</p>
 
 <p className="text-gray-500 mt-1">Provide the what programming language you covered in this tube eg: java,nodejs.</p>
   

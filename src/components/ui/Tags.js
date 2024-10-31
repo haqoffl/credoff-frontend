@@ -1,26 +1,28 @@
 import { CircleX } from "lucide-react"
 import { useState } from "react"
 
-export default function Tag({updateTags,setErr,ind}){
+export default function Tag({updateTags,ind,removeFunc}){
     let [tags,setTags] = useState([])
     let commaToTag =(val)=>{
-        let arr = val.split(",")
-       let isThere = tags.findIndex((val)=> val===arr[0])
-      if(arr.length > 1&&isThere === -1){
-        setTags(prev=>{
-            return [...prev,arr[0]]
-        })
+      console.log(val)
+let isValidValue = val.trim()
+console.log(isValidValue)
+if(isValidValue !== ','){
+  let arr = val.split(",")
+  let isThere = tags.findIndex((val)=> val===arr[0])
+ if(arr.length > 1&&isThere === -1){
+   setTags(prev=>{
+       return [...prev,arr[0]]
+   })
 
-        updateTags(ind,arr)
-   if(tags.length < 5){
-   setErr(ind,"A minimum of 5 tags is required.")
-   }else{
- setErr(null,"")
-   }
-      }
+   updateTags(ind,arr)
+
+ }
+}
     }
     const removeTag = (tagToRemove) => {
         setTags(tags.filter(tag => tag !== tagToRemove));
+        removeFunc(tagToRemove,ind)        
       };
     
     return(

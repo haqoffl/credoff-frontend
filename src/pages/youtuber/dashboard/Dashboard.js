@@ -1,34 +1,63 @@
-import { CirclePlus, InfoIcon, Mail } from "lucide-react"
+import { CirclePlus} from "lucide-react"
 import Search from "../../../components/ui/Search"
-import { useState } from "react"
-
+import { useEffect, useState } from "react"
+import {Link} from 'react-router-dom'
+import axios from 'axios'
+import CourseCard from "../../../components/youtuber/dashboard/CourseCard"
+import BetaWarn from "../../../components/youtuber/dashboard/BetaWarn"
 function Dashboard(){
     let [tubes,setTubes] = useState([])
+    useEffect(()=>{
+        let ownerId = localStorage.getItem('youtuberId')
+        axios.get(process.env.REACT_APP_BACKEND_URL+"tube/getTubes/"+ownerId).then((res)=>{
+                console.log(res.data)
+            setTubes(res.data)
+        }).catch(err=>{
+            console.log(err)
+        })
+    },[])
+
+ let abbreviateNumber = (num)=>{
+        if (num >= 1_000_000_000) {
+            return (num / 1_000_000_000).toFixed(1) + " B";
+        } else if (num >= 1_000_000) {
+            return (num / 1_000_000).toFixed(1) + " M";
+        } else if (num >= 1_000) {
+            return (num / 1_000).toFixed(1) + " K";
+        } else {
+            return num.toString();  // No abbreviation needed
+        }
+    }
     return(
         <>
       <div className="container mx-auto">
 {tubes.length === 0?null:<Search classes="w-10/12 mt-5 ms-5 lg:hidden"/>}
-     <div className="mt-10 flex justify-end mr-20">
-<button className="bg-primary text-white p-2 rounded-lg text-sm">Create Tube & Earn Certificates <CirclePlus className="inline ms-2 text-sm"/></button>
+{tubes.length === 0? (<div>
+<div className="mt-10 flex justify-end mr-20">
+<Link to="/youtuber/create" className="bg-primary text-white p-2 rounded-lg text-sm">Create Tube & Earn Certificates <CirclePlus className="inline ms-2 text-sm"/></Link>
      </div>
 
      <div className="mt-10">
-<div className="flex justify-center mb-10">
-<div className=" w-10/12 lg:w-6/12 p-3 md:p-10 text-center border rounded-lg font-poppins bg-yellow-100">
-<p className="text-yellow-400 font-semibold"><InfoIcon className="inline me-2 text-yellow-100 bg-yellow-400 rounded-full"/>Limited Access in Beta Version</p>
-
-<div className="mt-5 font-light">
-    <span>Thank you for using the beta version of our application! We're excited to have you on board. However, please note that the validation round for your YouTube course to issue certificates is currently restricted. If you're eager to access this feature, kindly reach out to us via email for further assistance.
-Please be aware that if you generate validation links without our consent, we are not responsible for any revenue or outcomes from such actions.
-</span>
-
-<p className="text-yellow-400 font-semibold mt-5"><Mail className="inline mr-3"/>support@credoff.com or haq.dist@gmail.com</p>
-
-</div>
-
-</div>
-</div>
+<BetaWarn />
      </div>
+</div>):
+(<div className="flex justify-center">
+<div className="w-full md:w-10/12 flex gap-4 flex-wrap p-2 mt-10">
+{/* card */}
+
+{tubes.map((val)=>{
+    let ic_a = abbreviateNumber(val.issued_certificate)
+    let te_a = abbreviateNumber(val.earned_amount)
+    let small_desc = val.desc.slice(0,80)
+    return(
+        <CourseCard title={val.title} desc={small_desc} thumbnail={"thumbnail/"+val.thumbnail} ic={ic_a} te={te_a} tubeId={val._id}/>
+    )
+})}
+
+</div>
+
+</div>)
+}
       </div>
         </>
     )

@@ -32,6 +32,19 @@ textarea{
 .tooltip{
   @apply relative inline-block
 }
+
+.bar-container{
+  @apply bg-gray-100 h-2 rounded-lg shadow-2xl
+}
+.barCompleted{
+  @apply bg-primary h-2 rounded-lg 
+}
+.quiz-reader{
+  @apply size-5 inline border
+}
+.quiz-reader-s{
+  @apply inline
+}
 /* .tooltip-content{
   @apply absolute bg-black text-white bottom-[100%] lg:bottom-[50%] lg:left-[150%] z-10 p-1 ps-3 pe-3 w-auto max-w-[90vw] text-wrap rounded-lg 
 }
