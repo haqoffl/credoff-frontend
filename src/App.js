@@ -7,6 +7,8 @@ import Tag from "./components/ui/Tags"
 import Account from "./pages/account/Account"
 import Login from "./pages/login/Login"
 import Quiz from "./pages/quizzes/Quiz"
+import GitProject from "./pages/projects/GitProject"
+import Certificate from "./pages/certificate/Certificate"
 function App(){
   return(
     <>
@@ -23,6 +25,8 @@ function App(){
 
 <Route element={<Account />} path="/myAccount/:role"/>
 <Route element={<Quiz />} path="/quizzes/:tube_id"/>
+<Route element={<GitProject />} path="/gitProject" />
+<Route element={<Certificate />} path="/certificate"/>
 </Routes>
 </BrowserRouter>    </>
   )

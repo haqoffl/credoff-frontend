@@ -1,9 +1,9 @@
-import { AudioLines, LogOutIcon } from "lucide-react"
+import { AudioLines, LogOutIcon,ArrowBigLeft} from "lucide-react"
 import ProgressLg from "../../components/ui/QuizProgressLg/customProgressLg"
 import {useSpeechSynthesis} from 'react-speech-kit'
 import speakingIcon from '../../assets/lottie/speekingIcon.json'
 import Lottie from "lottie-react"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import shortSuccess from  '../../assets/audio/short-success.mp3'
 import wrong from '../../assets/audio/wrong.mp3'
 import axios from 'axios'
@@ -14,13 +14,13 @@ function Quiz(){
     const [quiz,setQuiz] = useState([])
     const {speak,speaking} = useSpeechSynthesis()
     const [choosedOne,setChooseOne] = useState(null)
-    const [optionDefColor,setOptionDefColor] = useState("bg-gray-50  text-gray-600")
+    const [optionDefColor,setOptionDefColor] = useState("lg:bg-gray-50  text-gray-600")
     const [selectOptColor,setSelOptColor] = useState("")
     const [optState,setOptState] = useState(false)
     const {tube_id} = useParams('tube_id')
     let[currentQuiz,setCurrentQuiz] = useState(0)
     let [shuffledArr,setShuffledArr] = useState([])
-
+    let [qCompletion,setQCompletion] = useState(0)
     useEffect(()=>{
         // axios.post(process.env.REACT_APP_BACKEND_URL+"tube/ai-quiz-generate",{tube_id}).then(res=>{
         //     console.log(res.data)
@@ -29,36 +29,41 @@ function Quiz(){
         // })
 
         let shuffle = (arr)=>{
-            let array =arr.slice()
+            let array = arr.slice()
+
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
+          
+            return array;
         }
 
         axios.get(process.env.REACT_APP_BACKEND_URL+"tube/fetch-quizzes/"+tube_id).then(res=>{
-            console.log(res.data.total_quizzes[0])
-            console.log(res.data.total_quizzes[0].options)
-            let quizzes = res.data.total_quizzes
+            console.log("real array of options: ",res.data.total_quizzes[0].options)
+            let quizzes = JSON.parse(JSON.stringify(res.data.total_quizzes));
             let shuffledOptionQuiz = quizzes.map((val)=>{
                 let s_opt = shuffle(val.options)
                 val.options = s_opt
                 return val
             })
-            console.log(shuffledOptionQuiz)
+            
+            console.log("quiz is shuffle indirectly: ",res.data.total_quizzes[0].options)
+            console.log("quiz with shuffle: ",shuffledOptionQuiz[0].options)
             setShuffledArr(shuffledOptionQuiz)
             setQuiz(res.data.total_quizzes)
             
         }).catch(err=>{
             console.log(err)
         })
-    },[])
+    },[tube_id])
 
 
     const checkAnswer = (val,i)=>{
-        
+        console.log(val,quiz[currentQuiz])
         if(quiz.length === currentQuiz+1) return
         setOptState(true)
+        setQCompletion(qCompletion+6.66)
         if(val === quiz[currentQuiz].options[quiz[currentQuiz].answer]){
             const audio = document.createElement('audio')
             audio.src = shortSuccess
@@ -94,14 +99,19 @@ function Quiz(){
     return(
         <>
             <div className="container mx-auto">
-                <ProgressLg />
-                <p className="mt-5 text-red-600 text-end mx-5 hover:cursor"><span className="cursor-pointer hover:bg-gray-50 rounded-lg p-3"><LogOutIcon className="inline me-2"/> Quit The Quiz</span></p>
-                {/* quiz container */}
-               {quiz.length > 0 ?( <div className="flex p-5 justify-center mt-20">
+                <div className="border border-b lg:border-none px-2">
+                <p className="lg:hidden mt-5 mb-1 text-red-600 text-lg  mx-5 hover:cursor"><span className="cursor-pointer hover:bg-gray-50 rounded-lg p-2"><ArrowBigLeft className="inline mb-2 me-2"/>Leave Quiz</span></p>
+
+                <ProgressLg completion={qCompletion}/>
+             <p className="hidden lg:block mt-5 mb-2 text-red-600 text-end mx-5 hover:cursor"><span className="cursor-pointer hover:bg-gray-50 rounded-lg p-3"><LogOutIcon className="inline me-2"/> Quit The Quiz</span></p>
+        
+                </div>
+                     {/* quiz container */}
+               {quiz.length > 0 ?( <div className="flex p-5 justify-center mt-5 lg:mt-20">
                 <div className="w-11/12 lg:w-5/12">
-                        <p className="font-poppins text-primary font-semibold text-center">Question {currentQuiz+1}/{quiz.length}</p>
-                        <p className="font-poppins mt-5 ">{quiz[currentQuiz].question} <span onClick={()=>{speak({text:quiz[currentQuiz].question,rate:0.7,pitch:1})}}>
-                            {!speaking?<AudioLines className="inline ms-4 hover:cursor-pointer"/>:<div className="inline relative"><Lottie animationData={speakingIcon} loop={true}  style={{"height":"45px","width":"45px","display":"inline-block","position":"absolute","top":"-10px"}}/> </div>}
+                        <p className="font-poppins text-primary font-semibold text-sm lg:text-center">Question {currentQuiz+1} of {quiz.length}</p>
+                        <p className="font-poppins mt-5 w-full">{quiz[currentQuiz].question} <span onClick={()=>{speak({text:quiz[currentQuiz].question,rate:0.9,pitch:1})}}>
+                            {!speaking?<AudioLines className="inline ms-4 hover:cursor-pointer"/>:<div className=" ms-4 inline relative"><Lottie animationData={speakingIcon} loop={true}  style={{"height":"45px","width":"45px","display":"inline-block","position":"absolute","top":"-10px"}}/> </div>}
                         </span></p>
                         {quiz[currentQuiz].extention?<p>{quiz[currentQuiz].description}</p>:null}
                        {quiz[currentQuiz].code? 
@@ -124,11 +134,11 @@ function Quiz(){
                        </div>
                      </div>: <></>} 
 
-                        <div className="mt-10">
+                        <div className="mt-10 ">
                            {shuffledArr[currentQuiz].options.map((val,index)=>{
                             return(
                                 <>
-                                 <button disabled={optState} onClick={()=>{checkAnswer(val,index)}} className={`block p-2 border w-full text-start rounded-xl ps-5 ${choosedOne === index?selectOptColor:optionDefColor} font-semibold mt-5 mb-5`}>{index+1}) <span className="ms-5">{val}</span></button>
+                                 <button disabled={optState} onClick={()=>{checkAnswer(val,index)}} className={` block p-2 border w-full text-start rounded-xl ps-5 ${choosedOne === index?selectOptColor:optionDefColor} font-semibold mt-5 mb-5`}> <div className="flex"><span className="block">{index+1})</span><span className="ms-5 block">{val}</span></div></button>
                                 </>
                             )
                            })}
