@@ -8,7 +8,8 @@ module.exports = {
       },
       fontFamily:{
         poppins:"Poppins",
-        notoSans:"Noto Sans"
+        notoSans:"Noto Sans",
+      
       }
     },
   },

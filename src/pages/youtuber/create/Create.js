@@ -5,6 +5,10 @@ import Tag from "../../../components/ui/Tags"
 import { CircleMinus, CirclePlus } from "lucide-react"
 import imagesize from 'browser-image-size'
 import axios from 'axios'
+import Spinner from "../../../components/ui/Spinner"
+import { useNavigate } from "react-router-dom"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function Create(){
 let [tube,setTube] = useState({
     title:"",
@@ -27,7 +31,8 @@ let [conditions,setConditions] = useState([{filePath:"",commentStart:"",commentE
 
 let [errTerms,setErrorTerms] = useState([{filePathErr:""}])
 let [errCondtions,setErrorConditions] = useState([{filePathErr:"",commStartErr:"",commEndErr:"",funcError:""}])
-
+let [loading,setLoading] = useState(false)
+let nav = useNavigate()
 let myTube = (event)=>{
 event.preventDefault()
 let tubeObj = {
@@ -49,21 +54,28 @@ let isErrorInCond = conditions.findIndex((val,i)=>{
 
 console.log("errors: ",tagsLength,isErrorInTerm,isErrorInCond)
 if(tubeObj.title.length < 10 || tubeObj.desc.length < 200 || tubeObj.programming_language.length < 3 || tagsLength || isErrorInTerm !== -1 || isErrorInCond !== -1 || !tubeObj.thumbnail){
-console.log("Please make sure all fields are filled in.")
+toast.info("Please make sure all fields are filled in.")
 console.log(tubeObj)
 }else{
+    
     const formdata = new FormData()
     formdata.append('image',tubeObj.thumbnail)
     formdata.append('data',JSON.stringify(tubeObj))
     console.log(formdata)
+    setLoading(true)
+
     axios.post(process.env.REACT_APP_BACKEND_URL+"tube/createTube",formdata,{
         headers:{
             'Content-Type': 'multipart/form-data'
         }
     }).then((res)=>{
-        alert("created")
+        setLoading(false)
+        toast.success("created")
+        nav('/youtuber/dashboard')
         console.log(res)
     }).catch(err=>{
+        setLoading(false)
+        toast.error("something went wrong")
         console.log(err)
     })
 }
@@ -325,9 +337,12 @@ if (width === 1280 && height === 720){
 }
     return(
         <>
+          {loading?<div className="mt-5 fixed text-center w-full">
+                    <Spinner sizeClass={"size-40"}/>
+                </div>:null}
         <div className="container mx-auto">
-
-        <div className="flex lg:justify-center">
+              
+        <div className={`flex lg:justify-center ${loading?"opacity-30":"opacity-100"}`}>
         <form className="p-5 mt-5 w-full font-notoSans create-form lg:w-10/12">
                 <label className="block mt-5 font-semibold text-xl">Tube Title</label>
                 <input type="text" required={true} placeholder="enter tube title" className="create-input" onChange={(e)=>{updateBasicTube({title:e.target.value},10,100,"characters should be more than 10")}}/>
@@ -440,7 +455,7 @@ if (width === 1280 && height === 720){
 <p className="text-gray-500 mt-1">Provide the what programming language you covered in this tube eg: java,nodejs.</p>
   
 <div className="mt-5 flex justify-center lg:justify-end w-full lg:w-8/12 mb-10">
-<button className="bg-primary block p-2 text-white w-11/12 lg:w-6/12 rounded-lg" onClick={(e)=>{myTube(e)}}>Create Tube</button>
+<button disabled={loading} className="bg-primary block p-2 text-white w-11/12 lg:w-6/12 rounded-lg" onClick={(e)=>{myTube(e)}}>Create Tube</button>
 </div>
 
 
@@ -448,6 +463,8 @@ if (width === 1280 && height === 720){
         </div>
 
         </div>
+
+        <ToastContainer />
         </>
     )
 }

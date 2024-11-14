@@ -1,7 +1,10 @@
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import axios from  'axios'
+import {toast} from 'react-toastify'
+import { useState } from 'react'
 function LearnerAcc(){
+    let [loading,setLoading] = useState(false)
     let formik = useFormik({
         initialValues:{
             fullName:"",
@@ -12,12 +15,16 @@ function LearnerAcc(){
            dob:yup.date()
         }),
         onSubmit:(data)=>{
+            setLoading(true)
             let id = localStorage.getItem('learnerId')
             axios.post(process.env.REACT_APP_BACKEND_URL+"users/updateLearner",{id,fullName:data.fullName,dob:data.dob}).then(res=>{
                 console.log(res)
-                alert(res.data.message)
+                toast.success(res.data.message)
+                setLoading(false)
             }).catch(err=>{
+                toast.error("something went wrong,try again later")
                 console.log(err)
+                setLoading(false)
             })
         }
     })
@@ -27,7 +34,7 @@ function LearnerAcc(){
 
 <div className='mt-5 '>
 <label>Github username</label>
-<input type="text" placeholder='github username' disabled value="haqoffl" className='disabled:text-gray-600 disabled:bg-gray-50 border py-3 ps-2 rounded-lg block outline-none'/>
+<input type="text" placeholder='github username' disabled value="github username" className='disabled:text-gray-600 disabled:bg-gray-50 border py-3 ps-2 rounded-lg block outline-none'/>
 </div>
 
 <div className='mt-5 '>
@@ -42,7 +49,7 @@ function LearnerAcc(){
 
 
 <div >
-<button className='bg-primary block text-white mt-3 mb-5 p-3 w-full'>Update</button>
+<button disabled={loading} className='bg-primary block text-white mt-3 mb-5 p-3 w-full'><span>{loading?"updating...":"update"}</span></button>
 
 </div>
 

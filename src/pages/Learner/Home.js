@@ -1,0 +1,86 @@
+import LearnerNavbar from "../../components/layout/LearnerNavbar"
+import Lottie from 'lottie-react'
+import letstart from '../../assets/lottie/letstart.json'
+import CourseCard from "../../components/youtuber/dashboard/CourseCard"
+import Footer from "../../components/layout/Footer"
+import { useEffect, useState } from "react"
+import axios from 'axios'
+
+import CertificateCard from "../../components/learner/home/CertificateCard"
+import Spinner from "../../components/ui/Spinner"
+function Home() {
+  let [certificates,setCertificates] = useState([])
+  let [recentTubes,setRecentTubes] = useState([])
+  let [loading,setLoading] = useState(true)
+  useEffect(()=>{
+    axios.get(process.env.REACT_APP_BACKEND_URL+"certificate/getAllCertificates/"+"6725e710acda9921f10f9fe1").then(res=>{
+      console.log(res.data)
+      setLoading(false)
+      setCertificates(res.data)
+    }).catch(err=>{
+      alert("something went wrong")
+      console.log(err)
+    })
+  },[])
+
+  useEffect(()=>{
+    axios.get(process.env.REACT_APP_BACKEND_URL+"tube/getTubes").then(res=>{
+      console.log(res.data)
+      setRecentTubes(res.data)
+      setLoading(false)
+    }).catch(err=>{
+      console.log(err)
+      alert("something went wrong")
+    })
+  },[])
+    return (
+        <>
+        {loading?<div className="mt-20 text-center"><Spinner sizeClass={"size-40"}/></div>:<div>
+            <LearnerNavbar />
+          
+            
+           <div className="container">
+          {certificates.length===0?<><div className="flex justify-center mt-5 mb-5">
+            <div className="w-10/12 lg:w-4/12">
+            <Lottie
+            animationData={letstart}
+            loop={true}
+            
+            />
+            <p className="text-gray-400 font-poppins text-center text-sm">Welcome to Credoff! Kickstart your learning journey today!</p>
+            </div>
+          </div>  
+          
+        </>:(
+            <div className="container mx-auto mt-10 mb-10">
+              <p className="ms-5 font-poppins">You have ({certificates.length}) Documents</p>
+              {certificates.map((val,i)=>{
+                return(
+                  <CertificateCard courseTitle={val.tubeName} thumbnail={val.thumbnail}  channelName={val.youtuberChannelName} isMinted={val.isMinted}/>
+
+                )
+              })}
+
+
+            </div>
+          )}
+
+        
+           </div>
+          {recentTubes.length ==0?null: <div className="mx-10 mt-20 mb-10 border-t pt-3">
+            <p className="mb-3 font-poppins">Recent tubes</p>
+           
+{
+  recentTubes.map((val,i)=>{
+    return (
+    <CourseCard thumbnail={"thumbnail/"+val.thumbnail} ic={0} te={0} tubeId={"1"} isLearnerCard={true}/>
+    )
+  })
+}          </div>}
+          <Footer />
+        </div>}
+        </>
+    )
+}
+
+export default Home

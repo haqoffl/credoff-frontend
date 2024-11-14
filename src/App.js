@@ -9,6 +9,11 @@ import Login from "./pages/login/Login"
 import Quiz from "./pages/quizzes/Quiz"
 import GitProject from "./pages/projects/GitProject"
 import Certificate from "./pages/certificate/Certificate"
+import Eval from "./pages/evaluating/Eval"
+import GetStart from "./pages/getStart/GetStart"
+import Home from "./pages/Learner/Home"
+import 'react-toastify/dist/ReactToastify.css';
+
 function App(){
   return(
     <>
@@ -27,6 +32,9 @@ function App(){
 <Route element={<Quiz />} path="/quizzes/:tube_id"/>
 <Route element={<GitProject />} path="/gitProject" />
 <Route element={<Certificate />} path="/certificate"/>
+<Route element={<Eval />} path="/aiEval/:tube_id"/>
+<Route element={<GetStart />} path="/creds/:tube_id" />
+<Route element={<Home />} path="/learner"/>
 </Routes>
 </BrowserRouter>    </>
   )

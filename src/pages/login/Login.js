@@ -64,7 +64,7 @@ if(!role){
 
   setTimeout(()=>{
     window.location.assign("https://github.com/login/oauth/authorize/?client_id="+process.env.REACT_APP_GITHUB_CLIENT_ID+"&allow_signup=true&redirect_uri="+process.env.REACT_APP_URL+"login")
-  },1000)
+  },2000)
 
 }
 

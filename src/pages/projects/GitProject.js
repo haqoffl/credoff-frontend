@@ -2,10 +2,12 @@ import { useEffect,useState } from "react"
 import axios from 'axios'
 import {ArrowRight, FolderGit2} from 'lucide-react'
 import GitCard from "../../components/ui/GitCard"
+import { useNavigate } from "react-router-dom"
 
 function GitProject(){
     let [repo,setRepo]=useState([])
     let [selectedRepo,setSelectedRepo]=useState(null)
+    let nav = useNavigate()
     useEffect(()=>{
         axios.get(process.env.REACT_APP_BACKEND_URL+'users/githubRepos/'+localStorage.getItem('github_access_token')).then(res=>{
             console.log(res.data)
@@ -16,7 +18,14 @@ function GitProject(){
 
     let nextToAIReview=()=>{
         if(selectedRepo){
-            console.log(selectedRepo)
+            let rep = selectedRepo
+            let obj = {
+                name:rep.name,
+                url:rep.html_url,           
+             }
+             sessionStorage.setItem('gitProject',JSON.stringify(obj))
+             let tube = JSON.parse(sessionStorage.getItem('youtuberTube'))
+             nav('/aiEval/'+tube._id)
         }else{
             alert("select a project")
         }

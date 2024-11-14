@@ -8,6 +8,7 @@ export default function Certificate(){
         name:"Mohamed Abdul Kathar Jailani",
         course:"Web Development Fundamentals: HTML, CSS, JavaScript, and Bootstrap for Beginners",
         issuedAt:"02.11.2023",
+        courseBy:"Error makes clever",
         language:"English",
         scored_at_quiz:10,
         scored_at_project:10
@@ -68,6 +69,7 @@ console.log(canvas.height,canvas.width)
 <p className="font-notoSans text-lg absolute right-[31%] top-14">{data.language}</p>
 <p className="font-notoSans text-3xl absolute top-[72.4%] left-[34.5%]">{data.scored_at_quiz}</p>
 <p className="font-notoSans text-3xl absolute top-[72.5%] right-[30.5%]">{data.scored_at_project}</p>
+<p className="font-notoSans  font-bold absolute top-[57%] text-center text-[#343434] w-full ">{data.courseBy}</p>
 <div className="absolute top-[74%] left-[5%]" style={{
           padding: '20px',
           display: 'inline-block',

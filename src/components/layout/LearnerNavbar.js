@@ -1,26 +1,25 @@
-import { BookOpen, HandCoins, LogOutIcon, Menu, User, X, Youtube } from "lucide-react";
+import { BookOpen, HandCoins, LogOutIcon, Menu, User, X, Youtube ,CircleUser, Home, Search } from "lucide-react";
 import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import Search from "../ui/Search";
-export default function Navbar(){
+import { Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+//import Search from "../ui/Search";
+function LearnerNavbar(){
     let [dropdown,setDropDown] = useState(false)
     let [menuVis,setMenuVis] = useState(false)
     let nav = useNavigate()
     return(
-<>
-<div className="sticky z-50 bg-white top-0 ">
+        <>
+        <div className="sticky z-50 bg-white top-0 ">
 <div className={`${menuVis?"block":"flex justify-between "}lg:justify-around font-poppins py-3 shadow-md`}>
     <div className="w-3/12 text-center text-primary p-2">
     <h1 className="ms-3 font-semibold text-xl">Credoff</h1>
     </div>
-    <div onClick={()=>{setMenuVis(!menuVis)}} className={`py-2 lg:hidden mr-5 cursor-pointer ${menuVis?"hidden":"block"}`}>
-        <Menu />
-    </div>
-  <Search classes={"w-4/12 hidden lg:block"}/>
-    <div className={`lg:w-5/12 lg:block ${menuVis?"transition block  translate-y-3 ease-linear":"hidden transition ease-linear"}`}>
-        <ul className={`text-center lg:flex lg:justify-around w-full text-primary lg:p-2 nav-items`}>
-            <li onClick={()=>nav('/youtuber/dashboard')} className="my-5 lg:my-0 font"><Youtube className="inline mr-3 lg:hidden"/>Tube</li>
-            <li className="my-5 lg:my-0 opacity-55"><HandCoins className="inline mr-3 lg:hidden"/>Revenue</li>
+ 
+  
+    <div className={`lg:w-9/12 hidden lg:block`}>
+        <ul className={`text-center lg:flex justify-end gap-10 w-full text-primary lg:p-2 nav-items`}>
+            <li className="my-5 lg:my-0 font"><Youtube className="inline mr-3 lg:hidden"/>Home</li>
+            <li className="my-5 lg:my-0 opacity-55"><HandCoins className="inline mr-3 lg:hidden"/>Search</li>
             <li className="my-5 lg:my-0 opacity-55"><BookOpen className="inline mr-3 lg:hidden"/>Resourse</li>
             <li  onClick={()=>{setDropDown(!dropdown)}} className="my-5 lg:hidden"><User className="inline mr-3"/>My Account</li>
             <li   onClick={()=>{setMenuVis(!menuVis);setDropDown(false)} } className="my-5  text-red-500 lg:hidden"><X className="inline mr-3"/>close</li>
@@ -42,15 +41,26 @@ export default function Navbar(){
          <p className="text-gray-500">Github username : haqoffl</p>
          </div>
            <ul className="nav-drop">
-            <li onClick={()=>{nav('/myAccount/youtuber')}}>My Account</li>
+            <li onClick={()=>{nav('/myAccount/learner')}}>My Account</li>
             <li className="opacity-55">Business Details</li>
-            <li className="text-red-600 logout" onClick={()=>{localStorage.clear();nav('/login')}}><LogOutIcon className="inline mr-2 "/>Logout</li>
+            <li className="text-red-600 logout"><LogOutIcon className="inline mr-2 "/>Logout</li>
            </ul>
         </div>
-                </div>
+ </div>
                
 </div>
-<Outlet />
-</>
+
+{/* buttom bar */}
+<div className="lg:hidden fixed bottom-0  w-full bg-white z-50">
+           <ul className="flex justify-around pb-2 shadow">
+            <li className="text-primary border-t border-t-primary pt-2"><Home /></li>
+            <li className="pt-2 text-gray-400"><Search /></li>
+           <li className="pt-2 text-gray-400"> <BookOpen /></li>
+           <li className="pt-2" onClick={()=>{nav('/myAccount/learner')}}><CircleUser /></li>
+
+           </ul>
+       </div>
+        </>
     )
 }
+export default LearnerNavbar

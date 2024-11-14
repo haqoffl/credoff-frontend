@@ -2,7 +2,7 @@ import { Copy,  Pencil, Share2, Trash, XCircle } from "lucide-react";
 import { useState } from "react";
 import {FacebookIcon,FacebookShareButton, TelegramIcon, TelegramShareButton,WhatsappIcon,WhatsappShareButton, EmailShareButton, EmailIcon, TwitterShareButton, TwitterIcon}from'react-share'
 import axios from 'axios'
-export default function CourseCard({thumbnail,title,desc,te,ic,tubeId}){
+export default function CourseCard({thumbnail,title,desc,te,ic,tubeId,isLearnerCard}){
 let [shareVis,setShareVis] = useState(false)
     let copyTubeLink = async(text)=>{
 try{
@@ -40,10 +40,10 @@ alert("browser not support")
 <span><TwitterShareButton url={process.env.REACT_APP_URL+"creds/"+tubeId}><TwitterIcon  className="rounded-full size-8"/></TwitterShareButton></span>
 <span><EmailShareButton url={process.env.REACT_APP_URL+"creds/"+tubeId}><EmailIcon  className="rounded-full size-8" /></EmailShareButton></span>
 </div>):<div className="flex justify-end gap-2">
-<span className="cursor-pointer bg-slate-50 rounded-full p-1" onClick={()=>{deleteTube()}}><Trash className="p-1 text-red-600"/></span>
-<span  className="cursor-pointer  bg-slate-50 rounded-full p-1" onClick={()=>{copyTubeLink(tubeId)}}><Copy className="p-1"/></span> 
+{isLearnerCard===true?null:<span className="cursor-pointer bg-slate-50 rounded-full p-1" onClick={()=>{deleteTube()}}><Trash className="p-1 text-red-600"/></span>}
+<span  className="cursor-pointer  bg-slate-50 rounded-full p-1" onClick={()=>{copyTubeLink(tubeId)}}><Copy className="p-1"/></span>
 <span  className="cursor-pointer  bg-slate-50 rounded-full p-1" onClick={()=>{setShareVis(!shareVis)}}><Share2 className="p-1"/></span>
-<span  className="cursor-pointer  bg-slate-50 rounded-full p-1"><Pencil className="p-1"/></span>
+{isLearnerCard===true?null:<span  className="cursor-pointer  bg-slate-50 rounded-full p-1"><Pencil className="p-1"/></span>}
 
 </div>}
 
@@ -52,7 +52,7 @@ alert("browser not support")
 <img src={process.env.REACT_APP_BACKEND_URL+thumbnail}  alt="thumbnail" className="w-full rounded-t-lg"/>
 
 </div>
-<div className="mt-3 p-2">
+{isLearnerCard?null:<div className="mt-3 p-2">
 <b className="mb-1 block text-base">{title}</b>
 <p className="font-notoSans font-light text-sm">{desc}...</p>
 {/*details */}
@@ -62,6 +62,7 @@ alert("browser not support")
 </ul>
 
 </div>
+}
 </div>
         </>
     )
