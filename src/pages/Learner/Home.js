@@ -8,12 +8,14 @@ import axios from 'axios'
 
 import CertificateCard from "../../components/learner/home/CertificateCard"
 import Spinner from "../../components/ui/Spinner"
+import { useNavigate } from "react-router-dom"
 function Home() {
   let [certificates,setCertificates] = useState([])
   let [recentTubes,setRecentTubes] = useState([])
   let [loading,setLoading] = useState(true)
+  let nav = useNavigate()
   useEffect(()=>{
-    axios.get(process.env.REACT_APP_BACKEND_URL+"certificate/getAllCertificates/"+"6725e710acda9921f10f9fe1").then(res=>{
+    axios.get(process.env.REACT_APP_BACKEND_URL+"certificate/getAllCertificates/"+localStorage.getItem('learnerId')).then(res=>{
       console.log(res.data)
       setLoading(false)
       setCertificates(res.data)
@@ -56,7 +58,7 @@ function Home() {
               <p className="ms-5 font-poppins">You have ({certificates.length}) Documents</p>
               {certificates.map((val,i)=>{
                 return(
-                  <CertificateCard courseTitle={val.tubeName} thumbnail={val.thumbnail}  channelName={val.youtuberChannelName} isMinted={val.isMinted}/>
+                  <CertificateCard courseTitle={val.tubeName} thumbnail={val.thumbnail}  channelName={val.youtuberChannelName} isMinted={val.isMinted} _id={val.tubeId}/>
 
                 )
               })}
@@ -70,13 +72,24 @@ function Home() {
           {recentTubes.length ==0?null: <div className="mx-10 mt-20 mb-10 border-t pt-3">
             <p className="mb-3 font-poppins">Recent tubes</p>
            
+<div className="flex flex-wrap">
 {
   recentTubes.map((val,i)=>{
     return (
-    <CourseCard thumbnail={"thumbnail/"+val.thumbnail} ic={0} te={0} tubeId={"1"} isLearnerCard={true}/>
+<>
+<div className="w-1/4 p-2 cursor-pointer" onClick={()=>nav("/creds/"+val._id)}>
+<img src={process.env.REACT_APP_BACKEND_URL+"thumbnail/"+val.thumbnail} className="w-full "/>
+
+</div>
+
+</>
+
     )
   })
-}          </div>}
+}
+</div>
+
+          </div>}
           <Footer />
         </div>}
         </>

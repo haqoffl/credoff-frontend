@@ -21,7 +21,15 @@ function GitProject(){
             let rep = selectedRepo
             let obj = {
                 name:rep.name,
-                url:rep.html_url,           
+                fullName:rep.full_name,
+                url:rep.html_url,
+                description:rep.description,
+                language:rep.language,
+                stars:rep.stargazers_count,
+                forks:rep.forks_count,
+                visibility:rep.visibility,
+                pushed_at:rep.pushed_at,
+                         
              }
              sessionStorage.setItem('gitProject',JSON.stringify(obj))
              let tube = JSON.parse(sessionStorage.getItem('youtuberTube'))

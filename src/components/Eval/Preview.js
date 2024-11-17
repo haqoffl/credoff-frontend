@@ -1,10 +1,10 @@
 import { Book, Lightbulb, Trophy, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from 'axios'
-import { json } from "react-router-dom";
 import Spinner from "../ui/Spinner";
 function Preview({setStep}){
     let [data,setData] = useState(null)
+    let [learnerDt,setLearnerDt] = useState(null)
 
     useEffect(()=>{
 
@@ -41,12 +41,51 @@ const calculateOverallScoreOutOf10 = (arr) => {
     setData(obj)
     },[])
 
+    useEffect(()=>{
+    axios.post(process.env.REACT_APP_BACKEND_URL+"users/validateLearner",{id:localStorage.getItem('learnerId'),oauthToken:localStorage.getItem('github_access_token')}).then(res=>{
+        console.log("learnerData",res.data)
+        setLearnerDt(res.data)
+    })  .catch(err=>{
+        console.log(err)
+        alert("errors in fetching learner data")
+    })  
+    },[])
     let next = ()=>{
         let totalQuiz = data.totalCorrectQuiz
         let totalAi = data.aiPoints+data.termScore
         if((totalQuiz>6&&totalQuiz<15) && (totalAi>=8&&totalAi<15)){
             alert("You passed the evaluation")
-            //setStep(2)
+            let gitProject = JSON.parse(sessionStorage.getItem('gitProject'))
+            let obj = {
+                tubeId: data.tube._id,
+                tubeName:data.tube.title,
+                thumbnail:data.tube.thumbnail,
+                learnerId:localStorage.getItem('learnerId'),
+                learnerName:learnerDt.name,
+                language:data.language.language,
+                youtuberName:data.language.fullName,
+                youtuberChannelName:data.language.channelName,
+                quizScore:data.totalCorrectQuiz,
+                aiScore:data.aiPoints+data.termScore,
+                git_fullName:gitProject.fullName,
+                git_name:gitProject.name,
+                git_url:gitProject.url,
+                git_description:gitProject.description,
+                git_language:gitProject.language,
+                git_stars:gitProject.stars,
+                git_forks:gitProject.forks,
+                git_pushed_at:gitProject.pushed_at,
+                git_visibility:gitProject.visibility
+            }
+          console.log(obj)
+          axios.post(process.env.REACT_APP_BACKEND_URL+"certificate/MarkEvaluationComplete",obj).then(res=>{
+              console.log(res.data)
+              setStep(2)
+          }).catch(err=>{
+            alert(err.response.data.message?err.response.data.message:"something went wrong")
+          
+          })
+            // setStep(2)
         }else{
             alert("You did not pass the evaluation and will need to begin again from the first round")
 

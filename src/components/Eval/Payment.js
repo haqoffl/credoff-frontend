@@ -36,9 +36,9 @@ export default function Payment({setStep}){
     <div className='w-ful lg:w-6/12'>
     <h1 className='font-poppins text-primary  text-lg ms-5 mt-14 font-bold mb-5'>Credoff Course Detail</h1>
           <div className='w-full'>
-          <img src={"http://192.168.1.42:8000/thumbnail/4fht5aqhm2zx6q6s"} className='w-full rounded-lg mb-5'/>
+          <img src={process.env.REACT_APP_BACKEND_URL+"thumbnail/"+JSON.parse(sessionStorage.getItem('youtuberTube')).thumbnail} className='w-full rounded-lg mb-5'/>
 
-<h1 className='font-poppins font-light mb-5'>Web Development Fundamentals: HTML, CSS, JavaScript, and Bootstrap for Beginners</h1>
+<h1 className='font-poppins font-light mb-5'>{JSON.parse(sessionStorage.getItem('youtuberTube')).title}</h1>
 
           </div>
     </div>

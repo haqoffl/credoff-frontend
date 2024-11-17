@@ -7,7 +7,7 @@ export default function GitCard({repo,setState,state}){
     let selectRepo = ()=>{
         setClick(!click)
         setState(repo)
-    }
+    } 
     return(
         <div className="p-3 w-full lg:w-8/12 mt-5 ">
         <div className={` ${click && (state===repo)?"border border-primary":"border"}  p-3 w-full lg:w-8/12  rounded-lg hover:cursor-pointer hover:shadow-lg shadow-slate-400`} onClick={()=>selectRepo()}>

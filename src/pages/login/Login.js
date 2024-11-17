@@ -3,6 +3,7 @@ import log from '../../assets/lottie/log.json'
 import github from '../../assets/svg/github.svg'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { Helmet } from 'react-helmet'
 function Login(){
 let [role,setRole] = useState(null)
 
@@ -70,6 +71,24 @@ if(!role){
 
 }
     return(<>
+         <Helmet>
+      <title>Credoff - Login</title>
+      <meta
+      name="description"
+      content="credoff login"
+    />
+      {/* Open Graph Meta Tags (for Facebook, WhatsApp, etc.) */}
+      <meta property="og:title" content="Credoff - Login" />
+      <meta property="og:description" content="Login to your Credoff account to manage your credentials." />
+      <meta property="og:image" content="https://275c-2406-7400-ca-f643-1a74-5147-1fb-fe0.ngrok-free.app/logo192.png" />
+      <meta property="og:url" content="https://275c-2406-7400-ca-f643-1a74-5147-1fb-fe0.ngrok-free.app/login" />
+      <meta property="og:type" content="website" />
+      {/* Twitter Card Meta Tags */}
+      {/* <meta name="twitter:title" content="Credoff - Login" />
+      <meta name="twitter:description" content="Login to your Credoff account to manage your credentials." />
+      <meta name="twitter:image" content="https://cc6b-2406-7400-ca-f643-2d3b-5386-6898-b121.ngrok-free.app/logo192.png" />
+      <meta name="twitter:card" content="summary_large_image" /> */}
+    </Helmet>
     <div className="container mx-auto font-poppins mt-5">
     <h1 className="ms-3  text-primary font-semibold text-2xl">Credoff</h1>
         <div className="lg:flex">

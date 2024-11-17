@@ -1,6 +1,14 @@
 import { CircleAlert, Download, ExternalLink, Share } from "lucide-react"
 import { FacebookIcon, TwitterIcon, WhatsappIcon } from "react-share"
-function CertificateCard({courseTitle,thumbnail,channelName,isMinted}) {
+import { useNavigate } from "react-router-dom"
+function CertificateCard({courseTitle,thumbnail,channelName,isMinted,_id}) {
+  let nav = useNavigate()
+  let proceed = ()=>{
+    sessionStorage.setItem('youtuberTube',JSON.stringify({title:courseTitle,thumbnail,_id}))
+setTimeout(() => {
+  window.open('/pay', '_blank');
+},1000)
+  }
     return(
         <>
            <div className="mt-5 mb-5 flex justify-center">
@@ -18,7 +26,7 @@ function CertificateCard({courseTitle,thumbnail,channelName,isMinted}) {
                         <p ><Download className="size-6"/></p>
                   </div>:<><span className="text-red-500 bg-red-200 px-2 text-center mt-2 inline-block w-full mb-2 "><CircleAlert className="inline me-2 size-4"/> not issued</span>
                     <div className="flex">
-                    <button className="bg-primary block text-white px-2 py-1 w-full mt-2 ">Proceed now  <ExternalLink className="inline ms-2"/></button>
+                    <button className="bg-primary block text-white px-2 py-1 w-full mt-2 " onClick={proceed}>Proceed now  <ExternalLink className="inline ms-2"/></button>
 
                     </div></>}
                   

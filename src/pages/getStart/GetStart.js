@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import 'react-router-dom'
 import { useNavigate, useParams } from "react-router-dom"
 import axios from 'axios'
+import {Helmet} from "react-helmet";
+import Spinner from "../../components/ui/Spinner"
 function GetStart(){  
     let [tube,setTube] = useState(null)  
     let [info,setInfo] = useState(null)
@@ -41,7 +43,19 @@ let nav = useNavigate()
     }
     return(
         <>
-   {tube == null?null:     <div className="w-full  ">
+     
+
+   {!tube?<div className="flex justify-center mt-20"><Spinner sizeClass={"size-40"}/></div>:     <div className="w-full  ">
+
+         <Helmet>
+                <meta charSet="utf-8" />
+                <title>Credoff - {tube.title}</title>
+                <meta property="og:title" content={`Credoff - ${tube.title}`} />
+                <meta property="og:description" content={tube.desc} />
+                <meta property="og:image" content={process.env.REACT_APP_BACKEND_URL+"thumbnail/"+tube.thumbnail} />
+                <meta property="og:url" content={window.location.href} />
+
+            </Helmet>
       <h1 className="text-primary  text-xl font-semibold mt-5 ms-5 font-poppins">Credoff</h1>
         <div className="lg:flex justify-center gap-6 mt-10 p-5">
             <div className="w-full lg:w-4/12 mb-7">

@@ -77,7 +77,8 @@ function Quiz(){
             audio.src = shortSuccess
             audio.style = "display:none"
             audio.play()
-     
+            sessionStorage.setItem('totalCorrectQuiz',totalCorrect)
+
           setTimer(0)
             setTimeout(()=>{
                 nav('/gitProject')

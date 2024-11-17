@@ -13,6 +13,8 @@ import Eval from "./pages/evaluating/Eval"
 import GetStart from "./pages/getStart/GetStart"
 import Home from "./pages/Learner/Home"
 import 'react-toastify/dist/ReactToastify.css';
+import User from "./pages/user/User"
+import Pay from "./pages/pay/Pay"
 
 function App(){
   return(
@@ -21,8 +23,8 @@ function App(){
 <Routes>
 <Route path="/" element={<Signup />}/>
 <Route path="/login" element={<Login />}/>
+
 <Route  element={<Navbar />} > 
- 
  <Route path="youtuber/dashboard" element={<Dashboard />}/>
  <Route path="youtuber/create" element={<Create />}/>
  <Route path="/test" element={<Tag />}/>
@@ -35,6 +37,8 @@ function App(){
 <Route element={<Eval />} path="/aiEval/:tube_id"/>
 <Route element={<GetStart />} path="/creds/:tube_id" />
 <Route element={<Home />} path="/learner"/>
+<Route element={<User />} path={"/user/:learnerId/:tubeId/:type"}/>
+<Route element={ <Pay />} path="/pay"/>
 </Routes>
 </BrowserRouter>    </>
   )

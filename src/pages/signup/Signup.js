@@ -5,6 +5,8 @@ import {useEffect, useState} from 'react'
 import {TypeAnimation} from 'react-type-animation'
 import {CircleUserRound, Youtube} from 'lucide-react'
 import axios from 'axios'
+import {Helmet} from "react-helmet";
+
 function Signup(){
     let [role,setRole] = useState(false)
     
@@ -84,7 +86,15 @@ console.log(y_data,l_data)
         <>
 
 <div className="container mx-auto">
-        
+<Helmet>
+                <meta charSet="utf-8" />
+                <title>Credoff - Turn YouTube Learning into Real Credentials</title>
+                <meta property="og:title" content={`Credoff - Turn YouTube Learning into Real Credentials}`} />
+                <meta property="og:description" content={"Credoff - Turn YouTube Learning into Real Credentials"} />
+                <meta property="og:image" content={process.env.REACT_APP_BACKEND_URL+"thumbnail/"+"4fht53wzm3fkwfhj"} />
+                <meta property="og:url" content={window.location.href} />
+
+            </Helmet>
         <div className="lg:flex">
             <div className="lg:hidden bg-primary p-2 text-white font-poppins">
             <h1 className="text-xl mt-1 ms-[10px]">Credoff</h1>

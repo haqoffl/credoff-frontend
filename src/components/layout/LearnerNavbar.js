@@ -57,7 +57,7 @@ function LearnerNavbar(){
             <li className="pt-2 text-gray-400"><Search /></li>
            <li className="pt-2 text-gray-400"> <BookOpen /></li>
            <li className="pt-2" onClick={()=>{nav('/myAccount/learner')}}><CircleUser /></li>
-
+            <li className="pt-2 text-red-600" onClick={()=>{localStorage.clear();nav('/login')}}><LogOutIcon /></li>
            </ul>
        </div>
         </>
