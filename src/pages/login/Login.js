@@ -4,10 +4,13 @@ import github from '../../assets/svg/github.svg'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Helmet } from 'react-helmet'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 function Login(){
 let [role,setRole] = useState(null)
-
+let navigate = useNavigate()
 useEffect(()=>{
+    
     let q = new URLSearchParams(window.location.search)
     console.log(q)
      let code = q.get('code')
@@ -30,9 +33,19 @@ if(!accessTokenThere && code){
                 localStorage.setItem("github_id",resp.data.github_id)
                 localStorage.setItem("github_node_id",resp.data.github_node_id)
                 localStorage.setItem("github_access_token",access_token)
+                localStorage.setItem("name",resp.data.name)
+                localStorage.setItem("github_username",resp.data.github_username)   
                 console.log(resp)
+                setTimeout(()=>{
+                    navigate("/youtuber/dashboard")
+                },1000)
             }).catch(err=>{
                 console.log(err)
+                if(err.response.status === 400){
+                    toast.info("create youtuber account first")
+                }else{
+                    toast.error("something went wrong")
+                }
             })
         }
         let isLearner = localStorage.getItem('learnerData')
@@ -42,8 +55,20 @@ if(!accessTokenThere && code){
             localStorage.setItem("github_id",resp.data.github_id)
             localStorage.setItem("github_node_id",resp.data.github_node_id)
             localStorage.setItem("github_access_token",access_token)
+            localStorage.setItem("name",resp.data.name)
+            localStorage.setItem("github_username",resp.data.github_username) 
+
+            setTimeout(()=>{
+                navigate("/learner")
+            },1000)
             }).catch(err=>{
                 console.log(err)
+
+                if(err.response.status === 400){
+                    toast.info("create learner account first")
+                }else{
+                    toast.error("something went wrong")
+                }
             })
         }
       }
@@ -125,7 +150,7 @@ if(!role){
                      <button onClick={()=>{loginWithGithub()}} className="bg-black mt-5 w-full lg:mt-20 lg:w-10/12  rounded-lg p-2 text-white"><img src={github} className='h-[20px] w-[20px] inline me-3' alt='github'/>Login With Github</button>
                     
                      </div>
-                    <span className='mt-5 text-center block'>Create an new Account ? <span className='text-primary'>Sign up</span></span>
+                    <span className='mt-5 text-center block'>Create an new Account ? <span className='text-primary cursor-pointer' onClick={()=>{navigate("/")}}>Sign up</span></span>
                </div>
             </div>
         </div>

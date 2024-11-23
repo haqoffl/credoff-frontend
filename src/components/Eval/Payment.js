@@ -6,7 +6,7 @@ export default function Payment({setStep}){
         // Create a script element for the Razorpay payment button
         const script = document.createElement('script');
         script.src = "https://checkout.razorpay.com/v1/payment-button.js";
-        script.setAttribute('data-payment_button_id', 'pl_PKPozXWcuBsvym'); // Use your provided payment button ID
+        script.setAttribute('data-payment_button_id', 'pl_PHhpNhKqnDLliB'); // Use your provided payment button ID
         script.async = true;
 
         // Append the script to the form when the component mounts

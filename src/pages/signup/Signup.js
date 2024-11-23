@@ -6,10 +6,11 @@ import {TypeAnimation} from 'react-type-animation'
 import {CircleUserRound, Youtube} from 'lucide-react'
 import axios from 'axios'
 import {Helmet} from "react-helmet";
-
+import {useNavigate} from 'react-router-dom'
+import {toast, ToastContainer} from 'react-toastify'
 function Signup(){
     let [role,setRole] = useState(false)
-    
+    let nav = useNavigate()
     
 useEffect(()=>{
 
@@ -45,8 +46,18 @@ console.log(y_data,l_data)
             localStorage.setItem("github_access_token",access_token)
             localStorage.setItem("github_token_type",token_type)
            console.log(res)
+      if(res.status===200){
+        setTimeout(()=>{
+            nav('youtuber/dashboard')  
+       },1000)
+      }else{
+        console.log("it trigger")
+        toast.info(res.data)
+      }
          }).catch(err=>{
            console.log(err)
+           toast.error("something went wrong,try again later")
+            
          })
     }
 
@@ -60,11 +71,18 @@ console.log(y_data,l_data)
             localStorage.setItem("github_id",res.data.github_id)
             localStorage.setItem("github_node_id",res.data.github_node_id)
              localStorage.setItem("learnerId",res.data.learnerId)
-            
+             if(res.status===200){
+                setTimeout(()=>{
+                    nav('youtuber/dashboard')  
+               },1000)
+              }else{
+                toast.info(res.data)
+              }
           
 
           }).catch(err=>{
             console.log(err)
+            toast.error("something went wrong,try again later")
           })
     }
 }catch(err){
@@ -156,7 +174,7 @@ repeat={Infinity}
 </div>
 
 <div className='text-center mt-5 mb-5 border-t-2'>
-    <p className='text-gray-500 mt-5'>already have an account?<span className='text-primary hover:cursor-pointer hover:underline'> click here</span></p>
+    <p onClick={()=>{nav('/login')}} className='text-gray-500 mt-5'>already have an account?<span className='text-primary hover:cursor-pointer hover:underline'> click here</span></p>
     {/* <button className="bg-black mt-4 md:mt-3 md:w-6/12 w-full rounded-lg p-2 text-white"><img src={github} className='h-[20px] w-[20px] inline me-3' alt='github'/>Login via Github</button> */}
 
 </div>
@@ -164,6 +182,7 @@ repeat={Infinity}
 </div>
         </div>
         </div>
+        <ToastContainer />
         </>
     )
 }

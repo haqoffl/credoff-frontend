@@ -1,10 +1,11 @@
-import { ArrowRightCircle, Languages, UserRound, YoutubeIcon } from "lucide-react"
+import { ArrowRightCircle, GithubIcon, Languages, UserRound, YoutubeIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import 'react-router-dom'
 import { useNavigate, useParams } from "react-router-dom"
 import axios from 'axios'
 import {Helmet} from "react-helmet";
 import Spinner from "../../components/ui/Spinner"
+import {WhatsappIcon, WhatsappShareButton} from 'react-share'
 function GetStart(){  
     let [tube,setTube] = useState(null)  
     let [info,setInfo] = useState(null)
@@ -67,6 +68,7 @@ let nav = useNavigate()
                 <p className="font-light mb-5"><YoutubeIcon className="inline me-2 bg-red-600 text-white rounded-full p-1"/>{info.channelName}</p>
 
                 <p className="font-light mb-5"><Languages className="inline me-2"/>{info.language}</p>
+                <p className="text-green-500 font-poppins font-semibold cursor-pointer"><WhatsappShareButton url={process.env.REACT_APP_URL+"creds/"+tube_id}><p>SHARE VIA WHATSAPP <WhatsappIcon className="inline rounded-full size-8 ms-2"/></p></WhatsappShareButton></p>
                 </div>
 
             </div>
@@ -166,7 +168,8 @@ let nav = useNavigate()
 
                     <b className="font-poppins block text-xs mt-5 bg-yellow-200 p-2 rounded-lg mb-10"> *In the current beta version, there are no limits on evaluation attempts. Learners can submit their projects for evaluation as many times as needed*.
                     </b>
-                <button onClick={()=>{getStart()}} disabled={isQuizGenerated?false:true} className={`bg-primary text-white font-poppins mt-10 p-2 fixed -bottom-1 right-0 lg:text-lg w-full py-5 ${isQuizGenerated?"":"cursor-not-allowed opacity-90"}`}>{isQuizGenerated?<span>Begin your certificate journey</span>:<span>Wait a While</span>} <ArrowRightCircle className="inline ms-2 size-5"/></button>
+                    {localStorage.getItem('learnerId')?<button onClick={()=>{getStart()}} disabled={isQuizGenerated?false:true} className={`bg-primary text-white font-poppins mt-10 p-2 fixed -bottom-1 right-0 lg:text-lg w-full py-5 ${isQuizGenerated?"":"cursor-not-allowed opacity-90"}`}>{isQuizGenerated?<span>Begin your certificate journey</span>:<span>Wait a While</span>} <ArrowRightCircle className="inline ms-2 size-5"/></button>:<button onClick={()=>{nav("/")}} className="bg-black text-white font-poppins mt-10 p-2 fixed -bottom-1 right-0 lg:text-lg w-full py-5 text-xs ">Create an account via github to continue <GithubIcon className="inline text-white ms-2 "/></button>
+}
             </div>
         </div>
     </div>}

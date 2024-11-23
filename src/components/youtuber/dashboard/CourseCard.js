@@ -57,7 +57,7 @@ alert("browser not support")
 <p className="font-notoSans font-light text-sm">{desc}...</p>
 {/*details */}
 <ul className="flex justify-between mt-5 font-notoSans text-xs">
-<li className="text-green-600 ">Total Earnings: {te}</li>
+<li className="text-green-600 ">Total Earnings: ₹{te}</li>
 <li className="text-primary">{ic} Issued Certificates</li>
 </ul>
 

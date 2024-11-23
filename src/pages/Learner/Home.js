@@ -9,6 +9,7 @@ import axios from 'axios'
 import CertificateCard from "../../components/learner/home/CertificateCard"
 import Spinner from "../../components/ui/Spinner"
 import { useNavigate } from "react-router-dom"
+import { use } from "../../../../api/routers/tube"
 function Home() {
   let [certificates,setCertificates] = useState([])
   let [recentTubes,setRecentTubes] = useState([])
@@ -35,6 +36,9 @@ function Home() {
       alert("something went wrong")
     })
   },[])
+
+
+
     return (
         <>
         {loading?<div className="mt-20 text-center"><Spinner sizeClass={"size-40"}/></div>:<div>
@@ -77,7 +81,7 @@ function Home() {
   recentTubes.map((val,i)=>{
     return (
 <>
-<div className="w-1/4 p-2 cursor-pointer" onClick={()=>nav("/creds/"+val._id)}>
+<div className="w-full lg:w-1/4 p-2 cursor-pointer" onClick={()=>nav("/creds/"+val._id)}>
 <img src={process.env.REACT_APP_BACKEND_URL+"thumbnail/"+val.thumbnail} className="w-full "/>
 
 </div>

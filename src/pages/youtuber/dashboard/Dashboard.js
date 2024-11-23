@@ -54,7 +54,7 @@ function Dashboard(){
 
 {tubes.map((val)=>{
     let ic_a = abbreviateNumber(val.issued_certificate)
-    let te_a = abbreviateNumber(val.earned_amount)
+    let te_a = abbreviateNumber(Math.floor(val.earned_amount))
     let small_desc = val.desc.slice(0,80)
     return(
         <CourseCard title={val.title} desc={small_desc} thumbnail={"thumbnail/"+val.thumbnail} ic={ic_a} te={te_a} tubeId={val._id} isLearnerCard={false}/>

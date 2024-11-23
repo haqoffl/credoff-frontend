@@ -15,30 +15,34 @@ import Home from "./pages/Learner/Home"
 import 'react-toastify/dist/ReactToastify.css';
 import User from "./pages/user/User"
 import Pay from "./pages/pay/Pay"
+import LearnerRestrictor from './privateRouteRestrictors/LearnerRestrictor'
+import YoutuberRestrictor from "./privateRouteRestrictors/YoutuberRestrictor"
+import PaymentRestrictor from "./privateRouteRestrictors/PaymentRestrictor"
+import Restrictor from "./privateRouteRestrictors/Restrictor"
 
 function App(){
   return(
     <>
 <BrowserRouter>
 <Routes>
-<Route path="/" element={<Signup />}/>
-<Route path="/login" element={<Login />}/>
+<Route path="/" element={<Restrictor><Signup /></Restrictor>}/>
+<Route path="/login" element={<Restrictor><Login /></Restrictor>}/>
 
 <Route  element={<Navbar />} > 
- <Route path="youtuber/dashboard" element={<Dashboard />}/>
- <Route path="youtuber/create" element={<Create />}/>
+ <Route path="youtuber/dashboard" element={<YoutuberRestrictor><Dashboard /></YoutuberRestrictor>}/>
+ <Route path="youtuber/create" element={<YoutuberRestrictor><Create /></YoutuberRestrictor>}/>
  <Route path="/test" element={<Tag />}/>
   </Route>
 
 <Route element={<Account />} path="/myAccount/:role"/>
-<Route element={<Quiz />} path="/quizzes/:tube_id"/>
-<Route element={<GitProject />} path="/gitProject" />
-<Route element={<Certificate />} path="/certificate"/>
-<Route element={<Eval />} path="/aiEval/:tube_id"/>
+<Route element={<LearnerRestrictor><Quiz /></LearnerRestrictor>} path="/quizzes/:tube_id"/>
+<Route element={<LearnerRestrictor><GitProject /></LearnerRestrictor>} path="/gitProject" />
+<Route element={<Certificate />} path="/certificate/:tubeId/:learnerId"/>
+<Route element={<LearnerRestrictor><Eval /></LearnerRestrictor>} path="/aiEval/:tube_id"/>
 <Route element={<GetStart />} path="/creds/:tube_id" />
-<Route element={<Home />} path="/learner"/>
+<Route element={<LearnerRestrictor><Home /></LearnerRestrictor>} path="/learner"/>
 <Route element={<User />} path={"/user/:learnerId/:tubeId/:type"}/>
-<Route element={ <Pay />} path="/pay"/>
+<Route element={ <PaymentRestrictor><Pay /></PaymentRestrictor>} path="/pay"/>
 </Routes>
 </BrowserRouter>    </>
   )

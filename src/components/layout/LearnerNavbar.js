@@ -1,5 +1,5 @@
 import { BookOpen, HandCoins, LogOutIcon, Menu, User, X, Youtube ,CircleUser, Home, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 //import Search from "../ui/Search";
@@ -7,6 +7,8 @@ function LearnerNavbar(){
     let [dropdown,setDropDown] = useState(false)
     let [menuVis,setMenuVis] = useState(false)
     let nav = useNavigate()
+
+ 
     return(
         <>
         <div className="sticky z-50 bg-white top-0 ">
@@ -37,13 +39,13 @@ function LearnerNavbar(){
 <div className={`border nav-drop-container absolute bg-white shadow right-0 md:w-3/12 w-12/12 ${dropdown?"block":"hidden"} `}>
         <div>
          <div className="p-5">
-         <p className="text-xl">M.Abdul Haq</p>
-         <p className="text-gray-500">Github username : haqoffl</p>
+         <p className="text-xl">{localStorage.getItem('name')}</p>
+         <p className="text-gray-500">Github username : {localStorage.getItem('github_username')}</p>
          </div>
            <ul className="nav-drop">
             <li onClick={()=>{nav('/myAccount/learner')}}>My Account</li>
             <li className="opacity-55">Business Details</li>
-            <li className="text-red-600 logout"><LogOutIcon className="inline mr-2 "/>Logout</li>
+            <li className="text-red-600 logout"  onClick={()=>{localStorage.clear();nav('/login')}}><LogOutIcon className="inline mr-2 "/>Logout</li>
            </ul>
         </div>
  </div>

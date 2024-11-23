@@ -38,8 +38,8 @@ export default function Navbar(){
 <div className={`border nav-drop-container absolute bg-white shadow right-0 md:w-3/12 w-12/12 ${dropdown?"block":"hidden"} `}>
         <div>
          <div className="p-5">
-         <p className="text-xl">M.Abdul Haq</p>
-         <p className="text-gray-500">Github username : haqoffl</p>
+         <p className="text-xl">{localStorage.getItem('name')}</p>
+         <p className="text-gray-500">Github username : {localStorage.getItem('github_username')}</p>
          </div>
            <ul className="nav-drop">
             <li onClick={()=>{nav('/myAccount/youtuber')}}>My Account</li>
