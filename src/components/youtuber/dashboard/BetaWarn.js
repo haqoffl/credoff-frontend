@@ -12,7 +12,7 @@ export default function BetaWarn(){
 Please be aware that if you generate validation links without our consent, we are not responsible for any revenue or outcomes from such actions.
 </span>
 
-<p className="text-yellow-400 font-semibold mt-5"><Mail className="inline mr-3"/>support@credoff.com or haq.dist@gmail.com</p>
+<p className="text-yellow-400 font-semibold mt-5"><Mail className="inline mr-3"/> haq.dist@gmail.com</p>
 
 </div>
 

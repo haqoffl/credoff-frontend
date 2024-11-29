@@ -40,13 +40,14 @@ console.log(y_data,l_data)
     if(y_data){
         console.log("going to create youtube")
        axios.post(process.env.REACT_APP_BACKEND_URL+"users/createAccount/youtuber",{...y_data,oauthToken:access_token}).then(res=>{
-            localStorage.setItem("youtuberId",res.data.youtuberId)
-            localStorage.setItem("github_id",res.data.github_id)
-            localStorage.setItem("github_node_id",res.data.github_node_id)
-            localStorage.setItem("github_access_token",access_token)
-            localStorage.setItem("github_token_type",token_type)
+           
            console.log(res)
       if(res.status===200){
+        localStorage.setItem("youtuberId",res.data.youtuberId)
+        localStorage.setItem("github_id",res.data.github_id)
+        localStorage.setItem("github_node_id",res.data.github_node_id)
+        localStorage.setItem("github_access_token",access_token)
+        localStorage.setItem("github_token_type",token_type)
         setTimeout(()=>{
             nav('youtuber/dashboard')  
        },1000)
@@ -66,12 +67,13 @@ console.log(y_data,l_data)
 
         axios.post(process.env.REACT_APP_BACKEND_URL+"users/createAccount/learner",{...l_data,oauthToken:access_token}).then(res=>{  
             console.log(res.data)         
-             localStorage.setItem("github_access_token",access_token)
-            localStorage.setItem("github_token_type",token_type)
-            localStorage.setItem("github_id",res.data.github_id)
-            localStorage.setItem("github_node_id",res.data.github_node_id)
-             localStorage.setItem("learnerId",res.data.learnerId)
+            
              if(res.status===200){
+                localStorage.setItem("github_access_token",access_token)
+                localStorage.setItem("github_token_type",token_type)
+                localStorage.setItem("github_id",res.data.github_id)
+                localStorage.setItem("github_node_id",res.data.github_node_id)
+                 localStorage.setItem("learnerId",res.data.learnerId)
                 setTimeout(()=>{
                     nav('youtuber/dashboard')  
                },1000)

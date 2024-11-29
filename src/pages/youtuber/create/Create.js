@@ -24,6 +24,7 @@ let [preview,setPreview] = useState(null)
 let [errors,setErrors] = useState({
     title:"",
     desc:"",
+   certificateType:"",
     programming_language:"",
 })
 let [terms,setTerms] = useState([{filePath:"",keywords:[]}])
@@ -153,12 +154,15 @@ let removeConditions = ()=>{
 function isPath(input) {
     // Trim whitespace from the input
     const trimmedInput = input.trim();
+    const startsWithSlash = trimmedInput.startsWith('/');
+    const doesNotStartWithDotSlash = !trimmedInput.startsWith('./');
     // Check for presence of forward slashes or backward slashes
-    const hasSlashes = trimmedInput.includes('/') || trimmedInput.includes('\\');
+    const hasSlashes = trimmedInput.includes('/') || trimmedInput.includes('\\') ||trimmedInput.includes('./') === false;
     // Check for a file extension (common extensions)
     const hasFileExtension = /\.[a-zA-Z0-9]+$/.test(trimmedInput);
     // Determine if it's a path based on presence of slashes or file extension
-    return hasSlashes && hasFileExtension;
+  
+    return hasSlashes && hasFileExtension && startsWithSlash && doesNotStartWithDotSlash;
 }
 
 let updateTermsFilePath =(index,path)=>{
@@ -447,6 +451,14 @@ if (width === 1280 && height === 720){
 </div>
     )
 })}
+
+<div className="mt-5">
+    <label className="font-poppins font-semibold text-xl">Would you like to provide certificates for your courses as </label>
+    <div className="flex font-notoSans gap-5 mt-5">
+        <input type="radio" name="certificate-type" value="free" onChange={(e)=>{setTube((prev)=>{return {...prev,certificateType:e.target.value}})}}/> Free
+        <input type="radio" name="certificate-type" value="paid" onChange={(e)=>{setTube((prev)=>{return {...prev,certificateType:e.target.value}})}}/> Paid
+    </div>
+</div>
 <label className="block mt-5 font-semibold text-xl">Programming Language</label>
 <input type="text" placeholder="enter programming language" className="create-input" onChange={(e)=>{updateBasicTube({programming_language:e.target.value},3,100,"characters should be more 3")}}/>
 

@@ -42,6 +42,7 @@ setTimeout(()=>{
         <label className="block mt-3 font-semibold">channel Language:</label>
         <select className="block border border-gray-300   p-2 rounded-lg  mt-2 outline-none w-full ps-4" name='language' onChange={formik.handleChange} value={formik.values.language}>
 <option value="">Choose your channel language</option>
+<option value="english">English</option>
 <option value="hindi">Hindi</option>
 <option value="tamil">Tamil</option>
 <option value="telugu">Telugu</option>

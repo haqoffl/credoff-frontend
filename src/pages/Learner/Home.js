@@ -9,7 +9,6 @@ import axios from 'axios'
 import CertificateCard from "../../components/learner/home/CertificateCard"
 import Spinner from "../../components/ui/Spinner"
 import { useNavigate } from "react-router-dom"
-import { use } from "../../../../api/routers/tube"
 function Home() {
   let [certificates,setCertificates] = useState([])
   let [recentTubes,setRecentTubes] = useState([])
@@ -61,8 +60,9 @@ function Home() {
             <div className="container mx-auto mt-10 mb-10">
               <p className="ms-5 font-poppins">You have ({certificates.length}) Documents</p>
               {certificates.map((val,i)=>{
+                console.log(val)
                 return(
-                  <CertificateCard courseTitle={val.tubeName} thumbnail={val.thumbnail}  channelName={val.youtuberChannelName} isMinted={val.isMinted} _id={val.tubeId}/>
+                  <CertificateCard courseTitle={val.tubeName} isPayedCertificate={val.isPayedCertificate} thumbnail={val.thumbnail}  channelName={val.youtuberChannelName} isMinted={val.isMinted} _id={val.tubeId}/>
 
                 )
               })}

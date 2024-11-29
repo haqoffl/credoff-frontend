@@ -1,10 +1,10 @@
 import { CircleAlert, Download, ExternalLink, Share } from "lucide-react"
 import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton, WhatsappIcon, WhatsappShareButton } from "react-share"
 import { useNavigate } from "react-router-dom"
-function CertificateCard({courseTitle,thumbnail,channelName,isMinted,_id}) {
+function CertificateCard({courseTitle,isPayedCertificate,thumbnail,channelName,isMinted,_id}) {
   let nav = useNavigate()
   let proceed = ()=>{
-    sessionStorage.setItem('youtuberTube',JSON.stringify({title:courseTitle,thumbnail,_id}))
+    sessionStorage.setItem('youtuberTube',JSON.stringify({title:courseTitle,thumbnail,isPayedCertificate,_id}))
 setTimeout(() => {
   window.open('/pay', '_blank');
 },1000)

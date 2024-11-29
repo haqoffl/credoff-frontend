@@ -60,6 +60,7 @@ const calculateOverallScoreOutOf10 = (arr) => {
                 tubeId: data.tube._id,
                 tubeName:data.tube.title,
                 thumbnail:data.tube.thumbnail,
+                isPayedCertificate:data.tube.isPayedCertificate,
                 learnerId:localStorage.getItem('learnerId'),
                 learnerName:learnerDt.name,
                 language:data.language.language,

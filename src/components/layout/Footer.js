@@ -31,8 +31,8 @@ export default function Footer(){
 
                 <ul className='mb-5'>
                     <li className="font-poppins">Contacts</li>
-                    <li className="mt-2 text-sm">haq@credoff.com</li>
-                    <li className="mt-1 text-sm">support@credoff.com</li>
+                    <li className="mt-2 text-sm text-gray-400">haq@credoff.com</li>
+                    <li className="mt-1 text-sm text-gray-400">support@credoff.com</li>
                 </ul>
             </div>
            </div>
